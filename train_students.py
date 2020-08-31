@@ -9,9 +9,9 @@ import Aggregation
 tf.flags.DEFINE_string('dataset','mnist',"数据集")
 tf.flags.DEFINE_integer('nb_labels',10,"标签种类个数")
 
-tf.flags.DEFINE_string('data_dir','/tmp',"数据集所在位置")
-tf.flags.DEFINE_string('train_dir','/tmp/student_train_dir',"学生模型保存的位置")
-tf.flags.DEFINE_string('teachers_dir','/tmp/train_dir',"教师模型保存的位置")
+tf.flags.DEFINE_string('data_dir','./tmp',"数据集所在位置")
+tf.flags.DEFINE_string('train_dir','./tmp/student_train_dir',"学生模型保存的位置")
+tf.flags.DEFINE_string('teachers_dir','./tmp/train_dir',"教师模型保存的位置")
 
 tf.flags.DEFINE_integer('teachers_max_steps',3000,'教师模型最大训练次数')
 

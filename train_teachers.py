@@ -7,8 +7,8 @@ import analysis
 tf.flags.DEFINE_string('dataset','mnist','数据集名称')
 tf.flags.DEFINE_integer('nb_labels',10,'标签种类个数')
 
-tf.flags.DEFINE_string('data_dir','/tmp','存放样本地址')
-tf.flags.DEFINE_string('train_dir','/tmp/train_dir',
+tf.flags.DEFINE_string('data_dir','./tmp','存放样本地址')
+tf.flags.DEFINE_string('train_dir','./tmp/train_dir',
                        "存放训练中间数据地址")
 
 tf.flags.DEFINE_integer('max_steps',3000,"最大训练次数")
@@ -79,7 +79,7 @@ def predict(dataset,nb_teachers,teacher_id):
 def main(argv = None):
 
     # assert train_teacher(FLAGS.dataset,FLAGS.nb_teachers,FLAGS.teacher_id)
-    predict(FLAGS.dataset,FLAGS.nb_teachers,FLAGS.teacher_id)
+    train_teacher(FLAGS.dataset,FLAGS.nb_teachers,FLAGS.teacher_id)
 # 方法入口
 if __name__ == '__main__':
     tf.app.run()
