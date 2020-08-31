@@ -5,6 +5,7 @@ from six.moves import urllib
 import numpy as np
 import tensorflow.compat.v1 as tf
 
+
 FLAGS = tf.flags.FLAGS
 
 def create_dir_if_needed(dest_directory):

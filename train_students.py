@@ -17,7 +17,7 @@ tf.flags.DEFINE_integer('teachers_max_steps',3000,'教师模型最大训练次�
 
 tf.flags.DEFINE_integer('max_steps',3000,"学生模型最大训练次数")
 tf.flags.DEFINE_integer("nb_teachers",100,"教师模型个数")
-tf.flags.DEFINE_integer("stdnt_share",1000,"学生模型所需要的数据个数")
+tf.flags.DEFINE_integer("stdnt_share",5000,"学生模型所需要的数据个数")
 tf.flags.DEFINE_integer("lap_scale",10,"拉普拉斯噪音维度")
 tf.flags.DEFINE_boolean("save_labels",False,"是否保存教师模型投票结果")
 
@@ -51,17 +51,28 @@ def prepare_student_data(dataset, nb_teachers, save):
     assert FLAGS.stdnt_share < len(test_data)
     stdnt_data = test_data[:FLAGS.stdnt_share]
     # 得到的数据是 教师id,无标签数据个数，以及每个标签的概率
-    teacher_preds =ensemble_preds(dataset,nb_teachers,stdnt_data)
-    # 得到教师模型聚合后的结果
-    student_labels = Aggregation.noisy_max_plus(teacher_preds,FLAGS.lap_scale,reliability=0.1)
+    teacher_preds = ensemble_preds(dataset,nb_teachers,stdnt_data)
+    # 得到教师模型聚合后的结果 不可信的数据标签为-1
+    student_labels = Aggregation.noisy_max_plus(teacher_preds,FLAGS.lap_scale,reliability=0.1,gap=10)
+    ans_labels = test_labels[:FLAGS.stdnt_share]
+    indexs = [i for i in range(len(student_labels)) if student_labels[i] == -1]
+    print("the -1 indexs are")
+    print(indexs)
+    # 删除对应元素
+    student_data = test_data[:FLAGS.stdnt_share]
+    student_data = np.delete(student_data,indexs,axis=0)
+    print("len of student_data is"+str(len(student_data)))
+    ans_labels = np.delete(ans_labels,indexs)
+    student_labels = np.delete(student_labels,indexs)
+    print("len of student_labels is"+str(len(student_labels)))
 
-    ac_ag_labels = analysis.accuracy(student_labels,test_labels[:FLAGS.stdnt_share])
+    ac_ag_labels = analysis.accuracy(student_labels,ans_labels)
     print("Accuracy of the aggregated labels: " + str(ac_ag_labels))
 
     stdnt_test_data = test_data[FLAGS.stdnt_share:]
     stdnt_test_labels = test_labels[FLAGS.stdnt_share:]
 
-    return stdnt_data, student_labels, stdnt_test_data, stdnt_test_labels
+    return student_data, student_labels, stdnt_test_data, stdnt_test_labels
 
 def train_student(dataset, nb_teachers):
 
