@@ -21,6 +21,8 @@ def noisy_max_plus(teacher_preds, lap_scale,reliability,gap=10):
     results = np.zeros(FLAGS.stdnt_share,dtype=np.int32)
     # 这里应该要修改，如果两个投票差距小，那么应该直接忽略该数据？
     for i,vote in enumerate(votes) :
+        lap_scale = lap_scale * sum(vote)/ FLAGS.nb_teachers
+        # print(sum(vote))
         for index in range(FLAGS.nb_labels):
             vote[index] += np.random.laplace(loc=0.0,scale=float(lap_scale))
         b = sorted(enumerate(vote),key=lambda x:x[1])
