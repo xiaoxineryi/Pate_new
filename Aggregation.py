@@ -37,3 +37,4 @@ def noisy_max_plus(teacher_preds, lap_scale,reliability,gap=10):
     print("the unstrusted vote is"+str(untrusted_vote))
     print(results)
     return results
+
